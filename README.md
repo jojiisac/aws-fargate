@@ -1,4 +1,10 @@
 # aws-fargate
+This repo shows  
+    
+1. How to export  logs from  aws-fargate-eks cluster
+    
+
+
 ## Pre-Requisists 
 ### tools 
      eksctl    -  https://eksctl.io/
@@ -22,7 +28,7 @@ configure aws cli as follows
     Default output format [None]: 
     ~
 
-    
+
 ## Creating a cluster  
     ~
     #set env variales 
