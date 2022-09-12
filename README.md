@@ -12,7 +12,8 @@
     fargate profiles  
     IAM policy/roles/users   
 ###  Configure aws account
-configure aws cli as follows   
+configure aws cli as follows
+
     ~
     aws configure 
     AWS Access Key ID [None]: **********   #put the actual Acces Key ID here 
@@ -20,6 +21,7 @@ configure aws cli as follows
     Default region name [None]: ap-south-1 
     Default output format [None]: 
     ~
+
     
 ## Creating a cluster  
     ~
