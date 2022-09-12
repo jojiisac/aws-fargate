@@ -25,8 +25,7 @@ eksctl create fargateprofile -f ./clusterconfig.yaml
 
 
 
-# eksctl delete fargateprofile --cluster test-cluster  
-
+# eksctl delete cluster  $CLUSTER_NAME
 
 
 
