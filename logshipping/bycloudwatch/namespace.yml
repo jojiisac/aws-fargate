@@ -1,0 +1,17 @@
+
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: aws-observability
+  labels:
+    aws-observability: enabled
+
+---
+
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: prodcatalog-ns
+  labels:
+    aws-observability: enabled
+---

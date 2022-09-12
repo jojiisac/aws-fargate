@@ -1,0 +1,15 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-cluster
+  region: ap-south-1
+
+fargateProfiles:
+  - name: fp-custom
+    selectors:
+      - namespace: prodcatalog-ns
+      - namespace: appmesh-system
+      - namespace: aws-observability
+
