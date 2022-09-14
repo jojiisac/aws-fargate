@@ -1,0 +1,28 @@
+apiVersion: appmesh.k8s.aws/v1beta2
+kind: VirtualNode
+metadata:
+  name: frontend-node
+  namespace: prodcatalog-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend-node
+      version: v1
+  listeners:
+    - portMapping:
+        port: 9000
+        protocol: http
+  backends:
+    - virtualService:
+        virtualServiceRef:
+          name: prodcatalog
+    - virtualService:
+        virtualServiceRef:
+          name: prodsummary
+  serviceDiscovery:
+    dns:
+      hostname: frontend-node.prodcatalog-ns.svc.cluster.local
+  logging:
+    accessLog:
+      file:
+        path: /dev/stdout
