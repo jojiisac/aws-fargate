@@ -11,6 +11,9 @@ This repo shows
      kubectl v1.22   
      awscli 
      git 
+     jq
+     helm
+     
 ### Access
  AWS account  
  Iam user created with enoughf permission to  create update  delete the following 
