@@ -14,11 +14,13 @@
     --approve
 
 
-### 3. Create namepace service account 
+### 3. Create namepace service account  and enable logging 
 
-    kubectl create namespace prodcatalog-ns
 
-    
+    k apply -f ./namespaces.yaml
+    k apply -f ./cm.yaml
+
+
     aws iam create-policy \
         --policy-name ProdEnvoyNamespaceIAMPolicy \
         --policy-document file://envoy-iam-policy.json
@@ -41,7 +43,50 @@
   --override-existing-serviceaccounts \
   --approve
 
-Note : need more time will see 
+
+eksctl create iamserviceaccount \
+  --cluster ${CLUSTER_NAME} \
+  --namespace amazon-cloudwatch \
+  --name fluentd \
+  --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+
+
+kubectl apply -f ./cwagent-fluentd-quickstart.yaml 
+
+eksctl create iamserviceaccount \
+  --cluster ${CLUSTER_NAME}  \
+  --namespace amazon-cloudwatch \
+  --name cwagent-prometheus \
+  --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml
+kubectl apply -f ./prometheus-eks.yaml
+
+
+ aws iam create-policy \
+        --policy-name FluentBitEKSFargate \
+        --policy-document file://logging-permissions.json
+
+export PodRole=$(aws eks describe-fargate-profile --cluster-name ${CLUSTER_NAME} --fargate-profile-name fp-custom --query 'fargateProfile.podExecutionRoleArn' | sed -n 's/^.*role\/\(.*\)".*$/\1/ p')
+echo $PodRole
+
+aws iam attach-role-policy \
+        --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/FluentBitEKSFargate \
+        --role-name ${PodRole}
+
+
+######
+    (Optional) Enable Amazon EKS Control Plane logs
+    <!-- eksctl utils update-cluster-logging \
+    --enable-types all \
+    --region ${AWS_REGION} \
+    --cluster ${CLUSTER_NAME} \
+    --approve -->
+#####
 
 
   ###  deploye the basic apps 
@@ -103,7 +148,9 @@ Note : need more time will see
     --set region=$AWS_REGION \
     --set serviceAccount.create=false \
     --set serviceAccount.name=appmesh-controller \
-    --set tracing.enabled=false
+    --set tracing.enabled=true \
+    --set tracing.provider=x-ray
+
     
 
 
@@ -112,7 +159,7 @@ Note : need more time will see
     kubectl apply -f mesh.yaml
 
 
-    kubectl apply -f vn.yaml  
+    
 
     kubectl apply -f meshed_app.yaml
 

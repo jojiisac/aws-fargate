@@ -44,9 +44,10 @@ configure aws cli as follows
     aws eks --region ap-south-1 update-kubeconfig --name $CLUSTER_NAME
 
 
-    # creates fargate profile , which willbe used by workloads in following namespaces 
-    # prodcatalog-ns,appmesh-system,aws-observability
-    # these 
     eksctl create fargateprofile -f ./clusterconfig.yaml
 
+
+
+
+    eksctl delete cluster  $CLUSTER_NAME
 
