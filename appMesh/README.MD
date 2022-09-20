@@ -63,7 +63,8 @@ eksctl create iamserviceaccount \
   --override-existing-serviceaccounts \
   --approve
 
-curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml
+<!-- curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml -->
+
 kubectl apply -f ./prometheus-eks.yaml
 
 
@@ -121,7 +122,7 @@ aws iam attach-role-policy \
 
   
 
-
+    
     kubectl  apply -f crds.yml  
     
     kubectl create ns appmesh-system
@@ -151,7 +152,31 @@ aws iam attach-role-policy \
     --set tracing.enabled=true \
     --set tracing.provider=x-ray
 
-    
+
+######
+Run the command till you get the follwing results 
+
+
+        #COMMAND 
+        kubectl  get  all  -n appmesh-system
+
+        #RESULT 
+
+        NAME                                     READY   STATUS    RESTARTS   AGE
+        pod/appmesh-controller-9bcc957df-vwvgb   1/1     Running   0          2m37s
+
+        NAME                                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+        service/appmesh-controller-webhook-service   ClusterIP   10.100.108.92   <none>        443/TCP   2m48s
+
+        NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/appmesh-controller   1/1     1            1           2m38s
+
+        NAME                                           DESIRED   CURRENT   READY   AGE
+        replicaset.apps/appmesh-controller-9bcc957df   1         1         1       2m38s
+######
+######
+
+
 
 
 ### Istall mesh  

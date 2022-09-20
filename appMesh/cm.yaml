@@ -5,30 +5,30 @@ metadata:
   namespace: aws-observability
 data:
 
-  flb_log_cw: "true"  #ships fluent-bit process logs to CloudWatch
+  flb_log_cw: "false"  #ships fluent-bit process logs to CloudWatch
 
   output.conf: |
     [OUTPUT]
         Name cloudwatch_logs
         Match   *
         region ap-south-1
-        log_group_name eks-fargate-logs
-        log_stream_prefix feks-fargate-
+        log_group_name eksFargate-logs
+        log_stream_prefix feksFargate-
         auto_create_group true
         log_key log
 
-  parsers.conf: |
-    [PARSER]
-        Name crio
-        Format Regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+  # parsers.conf: |
+  #   [PARSER]
+  #       Name crio
+  #       Format Regex
+  #       Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
+  #       Time_Key    time
+  #       Time_Format %Y-%m-%dT%H:%M:%S.%L%z
   
-  filters.conf: |
-     [FILTER]
-        Name parser
-        Match *
-        Key_name log
-        Parser crio
+  # filters.conf: |
+  #    [FILTER]
+  #       Name parser
+  #       Match *
+  #       Key_name log
+  #       Parser crio
         

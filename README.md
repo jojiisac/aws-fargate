@@ -49,5 +49,8 @@ configure aws cli as follows
 
 
 
-    eksctl delete cluster  $CLUSTER_NAME
+    # eksctl delete cluster  $CLUSTER_NAME
+
+
+
 

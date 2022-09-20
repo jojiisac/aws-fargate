@@ -40,10 +40,8 @@ kind: Service
 metadata:
   name: ingress-gw
   namespace: prodcatalog-ns
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  
 spec:
-  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8088
