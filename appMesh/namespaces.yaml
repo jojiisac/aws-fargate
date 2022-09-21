@@ -19,6 +19,14 @@ metadata:
     aws-observability: enabled
 --- 
 
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: appmesh-system
+  labels:
+    aws-observability: enabled
+--- 
+
 apiVersion: v1
 kind: Namespace
 metadata:

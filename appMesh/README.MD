@@ -1,9 +1,9 @@
 
 
-
-
+# Setting up mesh,ingress,logging, tracing  
+Make sure that you have a EKS cluster, fargate profiles 
 ## Steps
-### 1. create    cluster and fargate profile as in  root of the project  
+### 1. configure aws account , env details and create cluster    and fargate profile as in  root of the project
 ### 2.  set up an OIDC provider with the cluster as follwos 
   
   
@@ -120,14 +120,13 @@ aws iam attach-role-policy \
   
 
 
-  ###  Add app mesh  controller
+  ###  Install the  app mesh  controller
 
   
 
     
     kubectl  apply -f crds.yml  
     
-    kubectl create ns appmesh-system
     
     # Create an IAM policy called AWSAppMeshK8sControllerIAMPolicy
     
@@ -155,46 +154,36 @@ aws iam attach-role-policy \
     --set tracing.provider=x-ray
 
 
-######
-Run the command till you get the follwing results 
+    #Run the command till you get the follwing results 
+
+COMMAND 
+
+    kubectl  get  all  -n appmesh-system
+RESULT
+
+Wait till you see the following resources are up and running
 
 
-        #COMMAND 
-        kubectl  get  all  -n appmesh-system
+    NAME                                     READY   STATUS    RESTARTS   AGE
+    pod/appmesh-controller-9bcc957df-vwvgb   1/1     Running   0          2m37s
 
-        #RESULT 
+    NAME                                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+    service/appmesh-controller-webhook-service   ClusterIP   10.100.108.92   <none>        443/TCP   2m48s
 
-        NAME                                     READY   STATUS    RESTARTS   AGE
-        pod/appmesh-controller-9bcc957df-vwvgb   1/1     Running   0          2m37s
+    NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/appmesh-controller   1/1     1            1           2m38s
 
-        NAME                                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
-        service/appmesh-controller-webhook-service   ClusterIP   10.100.108.92   <none>        443/TCP   2m48s
-
-        NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
-        deployment.apps/appmesh-controller   1/1     1            1           2m38s
-
-        NAME                                           DESIRED   CURRENT   READY   AGE
-        replicaset.apps/appmesh-controller-9bcc957df   1         1         1       2m38s
-######
-######
+    NAME                                           DESIRED   CURRENT   READY   AGE
+    replicaset.apps/appmesh-controller-9bcc957df   1         1         1       2m38s
 
 
-
-
-### Istall mesh  
+### Istall mesh, virtual service, virtual router, virtual node
 
     kubectl apply -f mesh.yaml
-
-
     
-
     kubectl apply -f meshed_app.yaml
 
-
-
-
-
-### Restart  deployment  
+### Restart  deployment 
 
     kubectl get pods -n prodcatalog-ns -o wide
     
@@ -206,11 +195,13 @@ Run the command till you get the follwing results
     
     kubectl get pods -n prodcatalog-ns -o wide
 
-Note :   you can see diff in the results of command  "kubectl get pods -n prodcatalog-ns -o wide" before and after restart , after rollout  there will be 2 conianers in each pod  
+Note :   you can see diff in the results of command  "kubectl get pods -n prodcatalog-ns -o wide" before and after restart , after rollout  there will be more than 1 containers  in each pod. This shows that the side car containers of  the mesh is added to the pods  
 
-### test the pods again 
+### Test the pods again 
 
-    Run the follwing scrit so that that you ts into a cotainer 
+wait for the pods to be runnning 
+
+Run the follwing scrit so that that you ts into a cotainer 
 
     export FE_POD_NAME=$(kubectl get pods -n prodcatalog-ns -l app=frontend-node -o jsonpath='{.items[].metadata.name}') 
 
@@ -238,6 +229,67 @@ Note :   you can see diff in the results of command  "kubectl get pods -n prodca
     echo $LB_NAME
 
 
-### deploy the v2  app and route for  it 
+### Deploy the v2  app and route for  it 
     
      kubectl apply -f canary.yaml 
+
+
+
+## Setting up ingress   
+
+###  Install ingress controller 
+
+    aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://alb_iam_policy.json
+
+    eksctl create iamserviceaccount \
+    --cluster $CLUSTER_NAME \
+    --namespace kube-system \
+    --name aws-load-balancer-controller \
+    --attach-policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+    --override-existing-serviceaccounts \
+    --approve
+
+
+
+    kubectl get sa aws-load-balancer-controller -n kube-system
+
+    kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
+
+
+    export VPC_ID=$(aws eks describe-cluster \
+                --name $CLUSTER_NAME \
+                --query "cluster.resourcesVpcConfig.vpcId" \
+                --output text)
+    echo $VPC_ID
+
+    export LBC_VERSION="v2.4.1"
+    export LBC_CHART_VERSION="1.4.1"
+
+    helm repo add eks https://aws.github.io/eks-charts
+
+    helm upgrade -i aws-load-balancer-controller \
+    eks/aws-load-balancer-controller \
+    -n kube-system \
+    --set clusterName="${CLUSTER_NAME}" \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=aws-load-balancer-controller \
+    --set image.tag="${LBC_VERSION}" \
+    --set region=${AWS_REGION} \
+    --set vpcId=${VPC_ID} \
+    --version="${LBC_CHART_VERSION}"
+
+
+
+###  create ingress annd expose the sample app 
+
+    kubectl apply -f  ingress.yaml
+
+Run the command
+
+    kubectl get Ingress -n prodcatalog-ns -owide 
+
+The above command will give the address of the exposed application.  
+use the address to browse the  application 
+
