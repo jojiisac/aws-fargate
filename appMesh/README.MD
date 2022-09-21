@@ -284,7 +284,11 @@ Run the follwing scrit so that that you ts into a cotainer
 
 ###  create ingress annd expose the sample app 
 
-    kubectl apply -f  ingress.yaml
+    # for exposing internal  
+    kubectl apply -f   ingress-internal.yaml
+
+    # for exposing pubblically (internet) 
+    kubectl apply -f  ingress-internet-facing.yaml
 
 Run the command
 
