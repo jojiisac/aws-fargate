@@ -5,7 +5,7 @@ metadata:
   namespace: prodcatalog-ns 
   name: prodcatalog
   annotations:
-    alb.ingress.kubernetes.io/scheme: internal  #  internet-facing  for  nnet facinng
+    alb.ingress.kubernetes.io/scheme:  internal   #   internet-facing for  net facinng  , internal for private subnets 
     alb.ingress.kubernetes.io/target-type: ip
 spec:
   ingressClassName: alb
