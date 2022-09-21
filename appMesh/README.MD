@@ -36,50 +36,50 @@ Make sure that you have a EKS cluster, fargate profiles
 
 ### 4. Set up observability 
     eksctl create iamserviceaccount \
-  --cluster ${CLUSTER_NAME} \
-  --namespace amazon-cloudwatch \
-  --name cloudwatch-agent \
-  --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-  --override-existing-serviceaccounts \
-  --approve
+    --cluster ${CLUSTER_NAME} \
+    --namespace amazon-cloudwatch \
+    --name cloudwatch-agent \
+    --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+    --override-existing-serviceaccounts \
+    --approve
 
 
-eksctl create iamserviceaccount \
-  --cluster ${CLUSTER_NAME} \
-  --namespace amazon-cloudwatch \
-  --name fluentd \
-  --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-  --override-existing-serviceaccounts \
-  --approve
+    eksctl create iamserviceaccount \
+    --cluster ${CLUSTER_NAME} \
+    --namespace amazon-cloudwatch \
+    --name fluentd \
+    --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+    --override-existing-serviceaccounts \
+    --approve
 
 
 
 
-eksctl create iamserviceaccount \
-  --cluster ${CLUSTER_NAME}  \
-  --namespace amazon-cloudwatch \
-  --name cwagent-prometheus \
-  --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-  --override-existing-serviceaccounts \
-  --approve
+    eksctl create iamserviceaccount \
+    --cluster ${CLUSTER_NAME}  \
+    --namespace amazon-cloudwatch \
+    --name cwagent-prometheus \
+    --attach-policy-arn  arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+    --override-existing-serviceaccounts \
+    --approve
 
-kubectl apply -f ./cwagent-fluentd-quickstart.yaml 
+    kubectl apply -f ./cwagent-fluentd-quickstart.yaml 
 
-<!-- curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml -->
+    <!-- curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml -->
 
-kubectl apply -f ./prometheus-eks.yaml
+    kubectl apply -f ./prometheus-eks.yaml
 
 
- aws iam create-policy \
-        --policy-name FluentBitEKSFargate \
-        --policy-document file://logging-permissions.json
+    aws iam create-policy \
+            --policy-name FluentBitEKSFargate \
+            --policy-document file://logging-permissions.json
 
-export PodRole=$(aws eks describe-fargate-profile --cluster-name ${CLUSTER_NAME} --fargate-profile-name fp-custom --query 'fargateProfile.podExecutionRoleArn' | sed -n 's/^.*role\/\(.*\)".*$/\1/ p')
-echo $PodRole
+    export PodRole=$(aws eks describe-fargate-profile --cluster-name ${CLUSTER_NAME} --fargate-profile-name fp-custom --query 'fargateProfile.podExecutionRoleArn' | sed -n 's/^.*role\/\(.*\)".*$/\1/ p')
+    echo $PodRole
 
-aws iam attach-role-policy \
-        --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/FluentBitEKSFargate \
-        --role-name ${PodRole}
+    aws iam attach-role-policy \
+            --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/FluentBitEKSFargate \
+            --role-name ${PodRole}
 
 
 ######
