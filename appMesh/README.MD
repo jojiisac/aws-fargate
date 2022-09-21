@@ -63,10 +63,7 @@ Make sure that you have a EKS cluster, fargate profiles
     --override-existing-serviceaccounts \
     --approve
 
-    kubectl apply -f ./cwagent-fluentd-quickstart.yaml 
-
-    <!-- curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/service/cwagent-prometheus/prometheus-eks.yaml   -o ./prometheus-eks.yaml -->
-
+    
     kubectl apply -f ./prometheus-eks.yaml
 
 
@@ -80,16 +77,6 @@ Make sure that you have a EKS cluster, fargate profiles
     aws iam attach-role-policy \
             --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/FluentBitEKSFargate \
             --role-name ${PodRole}
-
-
-######
-    (Optional) Enable Amazon EKS Control Plane logs
-    <!-- eksctl utils update-cluster-logging \
-    --enable-types all \
-    --region ${AWS_REGION} \
-    --cluster ${CLUSTER_NAME} \
-    --approve -->
-#####
 
 
   ###  deploye the basic apps 
@@ -297,3 +284,9 @@ Run the command
 The above command will give the address of the exposed application.  
 use the address to browse the  application 
 
+
+
+## NOTE:  X-Ray  Integrations  with app
+For xray to work fully, you have to integrate your apps with xray sdk, here is the dev guide for x ray integraion 
+
+[https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html](https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html)
