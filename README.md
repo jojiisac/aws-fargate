@@ -57,9 +57,14 @@ Configure aws cli as follows
 
 Now the cluster  will be created   aprox 15-25 minutes 
 
+## App mesh 
 Go to [appMesh](./appMesh/)  and follow instructions there  for setting up mesh,  ingress,  log shipping, trace, x-ray  using a sample app 
 
-Go to [](./logshipping/bycloudwatch/)  and follow instructions there  for setting   log shipping using a sample app 
+##  Log shippig into cloud watch 
+Go to [logshipping by cloudwatch](./logshipping/bycloudwatch/)  and follow instructions there  for setting   log shipping using a sample app 
+##  Log shippig into logz.io from  cloud watch 
+Go tto [logshipping/logForwarding2Logz.io](./logshipping/logForwarding2Logz.io)   and follow instructions there  for settingup log shipping logz.io via aws lamda
+
 
 ## Deleting and clean up 
 
