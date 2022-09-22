@@ -21,15 +21,12 @@
     1. "Template is ready"
 
     2. Amazon S3 URL 
-    
-
-
-
-10. Enter  s3 URL of file "" in text box "Amazon S3 URL" 
+  
+10. Enter  s3 URL of file in text box "Amazon S3 URL" 
 11.  Press  next 
 12.  Enter the parameters
         
-        Note  :   logzio token   & URL has to get from logz io  
+    Note  :   logzio token   & URL has to get from logz io  
 13. press next annd complete the creation of the function 
 
 end 
