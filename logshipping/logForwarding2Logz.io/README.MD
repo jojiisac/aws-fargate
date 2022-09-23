@@ -2,6 +2,8 @@
 
 # Exporting   cloud watch logs to logz.io
 
+
+
 1. create an s3 bucket in aws  
 2. create folder 'cloudwatch-auto-deployment'
 
@@ -29,5 +31,10 @@
     Note  :   logzio token   & URL has to get from logz io  
 13. press next annd complete the creation of the function 
 
-end 
+
+
+### References
+* https://app.logz.io/#/dashboard/send-your-data/log-sources/cloudwatch
+
+
     

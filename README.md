@@ -76,3 +76,5 @@ Go tto [logshipping/logForwarding2Logz.io](./logshipping/logForwarding2Logz.io) 
 3. Delete stack 'eksctl-test-cluster-cluster'   from the stack list
 
 
+### References
+* https://www.eksworkshop.com/

@@ -17,8 +17,8 @@ Make sure that you have a EKS cluster, fargate profiles
 ### 3. Create namepace service account  and enable logging 
 
 
-    k apply -f ./namespaces.yaml
-    k apply -f ./cm.yaml
+    kubectl apply -f ./namespaces.yaml
+    kubectl apply -f ./cm.yaml
 
 
     aws iam create-policy \
@@ -32,7 +32,7 @@ Make sure that you have a EKS cluster, fargate profiles
     --override-existing-serviceaccounts \
     --approve 
 
-
+Note:  The service account 'prodcatalog-envoy-proxies' is used to run the main application
 
 ### 4. Set up observability 
     eksctl create iamserviceaccount \
@@ -104,7 +104,7 @@ Make sure that you have a EKS cluster, fargate profiles
         }
     }
 
-  
+  Note : couple of minutes may be required to get the pods ready before the results are served
 
 
   ###  Install the  app mesh  controller
@@ -290,3 +290,9 @@ use the address to browse the  application
 For xray to work fully, you have to integrate your apps with xray sdk, here is the dev guide for x ray integraion 
 
 [https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html](https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html)
+[https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java.html](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java.html)
+
+### References
+* https://www.eksworkshop.com/
+* https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
+* https://www.eksworkshop.com/advanced/330_servicemesh_using_appmesh/
