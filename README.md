@@ -63,8 +63,10 @@ Go to [appMesh](./appMesh/)  and follow instructions there  for setting up mesh,
 ##  Log shippig into cloud watch 
 Go to [logshipping by cloudwatch](./logshipping/bycloudwatch/)  and follow instructions there  for setting   log shipping using a sample app 
 ##  Log shippig into logz.io from  cloud watch 
-Go tto [logshipping/logForwarding2Logz.io](./logshipping/logForwarding2Logz.io)   and follow instructions there  for settingup log shipping logz.io via aws lamda
+Go to [logshipping/logForwarding2Logz.io](./logshipping/logForwarding2Logz.io)   and follow instructions there  for setting up log shipping logz.io via aws lamda
 
+##  exporting container insights  to cloud watch 
+Go to [container-insights](./container-insights)   and follow instructions there  for setting up
 
 ## Deleting and clean up 
 
