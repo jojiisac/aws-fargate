@@ -77,6 +77,8 @@ Go to [container-insights](./container-insights)   and follow instructions there
 2. Sign into aws console,   go to "cloudformation" within that choose "stack" 
 3. Delete stack 'eksctl-test-cluster-cluster'   from the stack list
 
+     
+    aws  cloudformation  delete-stack  --stack-name $CLUSTER_NAME
 
 ### References
 * https://www.eksworkshop.com/
