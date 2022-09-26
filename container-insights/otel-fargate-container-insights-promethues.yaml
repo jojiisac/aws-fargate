@@ -32,7 +32,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 # collector configuration section
-# update `ClusterName=test-cluster` in the env variable OTEL_RESOURCE_ATTRIBUTES
+# update `ClusterName=YOUR-EKS-CLUSTER-NAME` in the env variable OTEL_RESOURCE_ATTRIBUTES
 # update `region=us-east-1` in the emfexporter if you are not using us-east-1 region
 ---
 apiVersion: v1
@@ -446,28 +446,13 @@ data:
 
     # only pod level metrics in metrics format, details in https://aws-otel.github.io/docs/getting-started/container-insights/eks-fargate
     exporters:
-      awsemf:
-        log_group_name: '/aws/containerinsights/{ClusterName}/performance'
-        log_stream_name: '{PodName}'
+      prometheusremotewrite:
+        endpoint: "http://prometheus-service:9090/api/v1/write"
         namespace: 'ContainerInsights'
-        region: ap-south-1
+       
         resource_to_telemetry_conversion:
           enabled: true
-        eks_fargate_container_insights_enabled: true
-        parse_json_encoded_attr_values: ["kubernetes"]
-        dimension_rollup_option: NoDimensionRollup
-        metric_declarations:
-          - dimensions: [ [ClusterName, LaunchType], [ClusterName, Namespace, LaunchType], [ClusterName, Namespace, PodName, LaunchType]]
-            metric_name_selectors:
-              - pod_cpu_utilization_over_pod_limit
-              - pod_cpu_usage_total
-              - pod_cpu_limit
-              - pod_memory_utilization_over_pod_limit
-              - pod_memory_working_set
-              - pod_memory_limit
-              - pod_network_rx_bytes
-              - pod_network_tx_bytes
-
+      
     extensions:
       health_check:
 
@@ -476,8 +461,11 @@ data:
         metrics:
           receivers: [prometheus]
           processors: [metricstransform/label_1, resourcedetection, metricstransform/rename, filter, cumulativetodelta, deltatorate, experimental_metricsgeneration/1, experimental_metricsgeneration/2, metricstransform/label_2, batch]
-          exporters: [awsemf]
+          exporters: [prometheusremotewrite]
       extensions: [health_check]
+
+
+#  metric_declarations, parse_json_encoded_attr_values, region
 
 # configure the service and the collector as a StatefulSet
 ---
@@ -530,7 +518,7 @@ spec:
             - "--config=/conf/adot-collector-config.yaml"
           env:
             - name: OTEL_RESOURCE_ATTRIBUTES
-              value: "ClusterName=test-cluster"
+              value: "ClusterName=YOUR-EKS-CLUSTER-NAME"
           resources:
             limits:
               cpu: 2
